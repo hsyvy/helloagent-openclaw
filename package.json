@@ -1,0 +1,66 @@
+{
+  "name": "@helloagent/openclaw-helloagent",
+  "version": "0.1.0",
+  "description": "OpenClaw HelloAgent channel plugin (relay-backed messaging)",
+  "type": "module",
+  "main": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "index.cjs",
+    "openclaw.plugin.json",
+    "README.md",
+    "scripts/dereference-sdk.mjs"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test:smoke": "tsx tests/smoke.ts",
+    "test:load": "tsx tests/plugin-load.ts",
+    "test:round-trip": "tsx tests/round-trip.ts",
+    "prepare:install": "npm run build --silent && node scripts/dereference-sdk.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "peerDependencies": {
+    "openclaw": ">=2026.4.24"
+  },
+  "peerDependenciesMeta": {
+    "openclaw": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@helloagent/sdk": "file:../../sdk-ts"
+  },
+  "bundledDependencies": [
+    "@helloagent/sdk"
+  ],
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "openclaw": "^2026.4.24",
+    "tsx": "^4.21.0",
+    "typescript": "^5.5.0"
+  },
+  "openclaw": {
+    "extensions": [
+      "./dist/index.js"
+    ],
+    "setupEntry": "./dist/setup-entry.js",
+    "channel": {
+      "id": "helloagent",
+      "label": "HelloAgent",
+      "selectionLabel": "HelloAgent (relay)",
+      "docsPath": "/channels/helloagent",
+      "docsLabel": "helloagent",
+      "blurb": "Relay-backed messaging for HelloAgent personal agents.",
+      "persistedAuthState": {
+        "specifier": "./dist/src/auth/presence.js",
+        "exportName": "hasAnyHelloAgentAuth"
+      }
+    }
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "id": "helloagent",
+  "kind": "channel",
+  "name": "HelloAgent",
+  "description": "HelloAgent channel plugin (relay-backed messaging).",
+  "version": "0.1.0",
+  "channels": ["helloagent"],
+  "activation": {
+    "onStartup": true,
+    "onChannels": ["helloagent"],
+    "onCapabilities": ["channel"]
+  },
+  "channelEnvVars": {
+    "helloagent": [
+      "HELLOAGENT_API_URL",
+      "HELLOAGENT_WEB_URL",
+      "HELLOAGENT_RELAY_WS_URL",
+      "HELLOAGENT_OAUTH_CLIENT_ID"
+    ]
+  },
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "apiUrl": {
+        "type": "string",
+        "description": "HelloAgent REST base URL. Defaults to https://api.helloagent.io.",
+        "format": "uri"
+      },
+      "relayWs": {
+        "type": "string",
+        "description": "Relay WebSocket URL override.",
+        "format": "uri"
+      }
+    }
+  },
+  "channelConfigs": {
+    "helloagent": {
+      "schema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Set false to keep paired creds on disk but prevent OpenClaw from starting the channel."
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name shown in OpenClaw's channel list."
+          },
+          "apiUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "HelloAgent REST base URL override (per-account)."
+          },
+          "relayWs": {
+            "type": "string",
+            "format": "uri",
+            "description": "Relay WebSocket URL override (per-account)."
+          },
+          "allowFrom": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Allowlist of peer handles permitted to DM."
+          },
+          "dmPolicy": {
+            "type": "string",
+            "enum": ["allowlist", "allow-all", "deny-all", "pairing"],
+            "description": "Direct-message gating policy."
+          }
+        }
+      },
+      "uiHints": {
+        "enabled": { "label": "Enabled" },
+        "name": { "label": "Display name", "placeholder": "HelloAgent" },
+        "apiUrl": { "label": "API URL (override)", "placeholder": "https://api.helloagent.io" },
+        "relayWs": { "label": "Relay WS (override)", "placeholder": "wss://relay.helloagent.io/v1/ws" }
+      }
+    }
+  }
+}
