@@ -103,8 +103,8 @@ function fakeCreds(handle: string, token = "ha_smoke_" + "0".repeat(48)): HelloA
     agentName: agentName ?? "agent",
     ownerHandle: ownerHandle ?? "owner",
     token,
-    apiUrl: "https://api.helloagent.io",
-    relayWs: "wss://relay.helloagent.io/v1/ws",
+    apiUrl: "https://api.helloagent.cc",
+    relayWs: "wss://relay.helloagent.cc/v1/ws",
     linkedAt: new Date().toISOString(),
     source: "manual",
   };

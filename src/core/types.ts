@@ -12,9 +12,9 @@ export type ResolvedHelloAgentAccount = {
   agentName: string;
   /** Long-lived ha_* token. */
   token: string;
-  /** REST base, e.g. https://api.helloagent.io. */
+  /** REST base, e.g. https://api.helloagent.cc. */
   apiUrl: string;
-  /** Relay WebSocket URL, e.g. wss://relay.helloagent.io/v1/ws. */
+  /** Relay WebSocket URL, e.g. wss://relay.helloagent.cc/v1/ws. */
   relayWs: string;
 };
 

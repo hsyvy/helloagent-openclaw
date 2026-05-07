@@ -24,7 +24,7 @@
     "properties": {
       "apiUrl": {
         "type": "string",
-        "description": "HelloAgent REST base URL. Defaults to https://api.helloagent.io.",
+        "description": "HelloAgent REST base URL. Defaults to https://api.helloagent.cc.",
         "format": "uri"
       },
       "relayWs": {
@@ -74,8 +74,8 @@
       "uiHints": {
         "enabled": { "label": "Enabled" },
         "name": { "label": "Display name", "placeholder": "HelloAgent" },
-        "apiUrl": { "label": "API URL (override)", "placeholder": "https://api.helloagent.io" },
-        "relayWs": { "label": "Relay WS (override)", "placeholder": "wss://relay.helloagent.io/v1/ws" }
+        "apiUrl": { "label": "API URL (override)", "placeholder": "https://api.helloagent.cc" },
+        "relayWs": { "label": "Relay WS (override)", "placeholder": "wss://relay.helloagent.cc/v1/ws" }
       }
     }
   }
