@@ -32,8 +32,8 @@ type LoginParams = Parameters<LoginFn>[0];
 type RuntimeEnv = LoginParams["runtime"];
 
 const DEFAULT_API_URL = "https://api.helloagent.cc";
-const DEFAULT_WEB_URL = "https://web.helloagent.cc";
-const DEFAULT_RELAY_WS = "wss://relay.helloagent.cc/v1/ws";
+const DEFAULT_WEB_URL = "https://app.helloagent.cc";
+const DEFAULT_RELAY_WS = "wss://api.helloagent.cc/v1/ws";
 const DEFAULT_CLIENT_ID = "openclaw";
 const DEFAULT_AGENT_NAME = "jarvis";
 
