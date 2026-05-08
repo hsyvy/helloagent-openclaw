@@ -29,8 +29,7 @@
     "index.cjs",
     "openclaw.plugin.json",
     "README.md",
-    "LICENSE",
-    "scripts/dereference-sdk.mjs"
+    "LICENSE"
   ],
   "publishConfig": {
     "access": "public"
@@ -39,9 +38,7 @@
     "build": "tsc",
     "typecheck": "tsc --noEmit",
     "test:smoke": "tsx tests/smoke.ts",
-    "test:load": "tsx tests/plugin-load.ts",
-    "test:round-trip": "tsx tests/round-trip.ts",
-    "prepare:install": "npm run build --silent && node scripts/dereference-sdk.mjs"
+    "prepublishOnly": "npm run build"
   },
   "engines": {
     "node": ">=22"
@@ -55,11 +52,8 @@
     }
   },
   "dependencies": {
-    "@helloagentai/sdk": "file:../../sdk-ts"
+    "@helloagentai/sdk": "^0.2.0"
   },
-  "bundledDependencies": [
-    "@helloagentai/sdk"
-  ],
   "devDependencies": {
     "@types/node": "^25.6.0",
     "openclaw": "^2026.4.24",

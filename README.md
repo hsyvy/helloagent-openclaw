@@ -1,12 +1,12 @@
 # @helloagentai/openclaw
 
-OpenClaw channel plugin for HelloAgent — second-iteration scaffold mirroring
-the structure of [`larksuite/openclaw-lark`](https://github.com/larksuite/openclaw-lark).
+OpenClaw channel plugin for HelloAgent — relay-backed messaging through OpenClaw's plugin API. Built on top of [`@helloagentai/sdk`](https://www.npmjs.com/package/@helloagentai/sdk).
 
-This package is a fresh implementation. The original
-[`integrations/openclaw-channel/`](../openclaw-channel/) package remains
-unchanged and continues to ship from this repo; this directory exists to
-trial a Lark-shaped plugin layout that closes specific gaps:
+```bash
+npm install @helloagentai/openclaw
+```
+
+## Features
 
 - **`security.dm`** policy adapter (allowlist / allow-all / deny-all)
 - **`pairing`** adapter for pairing-code DM approval
@@ -76,15 +76,18 @@ trial a Lark-shaped plugin layout that closes specific gaps:
 - Skills directory.
 - CLI diagnostics (`helloagent doctor`, `helloagent diagnose`).
 - Reactions, typing indicator, edit/delete.
-- Tests.
 
-These are listed as the next wave once the MVP compiles and pairs cleanly.
+These are the next wave once the MVP compiles and pairs cleanly.
 
 ## Local development
 
 ```sh
-cd integrations/openclaw-HelloAgent
 npm install
 npm run typecheck
 npm run build
+npm run test:smoke
 ```
+
+## License
+
+MIT
