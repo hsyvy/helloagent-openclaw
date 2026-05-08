@@ -16,10 +16,10 @@
  * Workarounds applied — same as the existing
  * `examples/openclaw_plugin_load_test.ts`:
  *
- *   - The plugin's `@helloagent/sdk` dep is `file:../../sdk-ts` which npm
+ *   - The plugin's `@helloagentai/sdk` dep is `file:../../sdk-ts` which npm
  *     symlinks. OpenClaw's safety scanner refuses to install plugins whose
  *     node_modules contain symlinks pointing outside the plugin root, so
- *     we materialise a real copy of sdk-ts into node_modules/@helloagent/sdk
+ *     we materialise a real copy of sdk-ts into node_modules/@helloagentai/sdk
  *     for the duration of the test, then restore the symlink at the end.
  *   - `auth/login.ts` uses child_process.spawn() to launch the user's
  *     browser; OpenClaw flags this as dangerous. We pass
@@ -70,7 +70,7 @@ function materialiseSdkCopy(): void {
   }
   rmSync(SDK_SHIM_DIR, { recursive: true, force: true });
   mkdirSync(SDK_SHIM_DIR, { recursive: true });
-  // Copy with symlinks dereferenced so node_modules/@helloagent/sdk is a
+  // Copy with symlinks dereferenced so node_modules/@helloagentai/sdk is a
   // real directory, not a symlink crossing the plugin root.
   cpSync(SDK_DIR, path.join(SDK_SHIM_DIR, "sdk"), {
     recursive: true,

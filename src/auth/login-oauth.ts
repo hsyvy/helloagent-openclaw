@@ -8,7 +8,7 @@ import {
   HelloAgentApiError,
   linkChannel,
   oauthExchangeToken,
-} from "@helloagent/sdk";
+} from "@helloagentai/sdk";
 
 import {
   CREDS_VERSION,

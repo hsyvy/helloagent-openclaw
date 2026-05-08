@@ -12,7 +12,7 @@
  * runs in the background and pushes `{type:"chunk"|"end"|"error"}` items;
  * the AsyncGenerator drains them and yields strings.
  */
-import type { IncomingMessage } from "@helloagent/sdk";
+import type { IncomingMessage } from "@helloagentai/sdk";
 import type { ChannelGatewayContext } from "openclaw/plugin-sdk/channel-contract";
 import { dispatchInboundDirectDmWithRuntime } from "openclaw/plugin-sdk/channel-inbound";
 
