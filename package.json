@@ -1,5 +1,5 @@
 {
-  "name": "@helloagent/openclaw",
+  "name": "@helloagentai/openclaw",
   "version": "0.1.0",
   "description": "OpenClaw HelloAgent channel plugin (relay-backed messaging)",
   "license": "MIT",
@@ -55,10 +55,10 @@
     }
   },
   "dependencies": {
-    "@helloagent/sdk": "file:../../sdk-ts"
+    "@helloagentai/sdk": "file:../../sdk-ts"
   },
   "bundledDependencies": [
-    "@helloagent/sdk"
+    "@helloagentai/sdk"
   ],
   "devDependencies": {
     "@types/node": "^25.6.0",

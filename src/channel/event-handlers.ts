@@ -9,7 +9,7 @@
  * card actions, and bot membership changes are not part of HelloAgent's
  * relay protocol yet.
  */
-import type { IncomingMessage } from "@helloagent/sdk";
+import type { IncomingMessage } from "@helloagentai/sdk";
 
 import { haLogger } from "../core/ha-logger.js";
 import { isMessageExpired } from "../messaging/inbound/dedup.js";

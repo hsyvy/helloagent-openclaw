@@ -18,7 +18,7 @@
  *
  * `stopAccount(accountId)` tears down the live client.
  */
-import type { IncomingMessage } from "@helloagent/sdk";
+import type { IncomingMessage } from "@helloagentai/sdk";
 import type { ChannelGatewayContext } from "openclaw/plugin-sdk/channel-contract";
 
 import { haLogger } from "../core/ha-logger.js";

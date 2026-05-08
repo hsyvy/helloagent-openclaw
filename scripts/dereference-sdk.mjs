@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /**
  * Local dev helper: replace the npm-created symlink at
- * `node_modules/@helloagent/sdk` with a real copy of `../../sdk-ts`, and scrub
+ * `node_modules/@helloagentai/sdk` with a real copy of `../../sdk-ts`, and scrub
  * nested symlinks inside the copy.
  *
- * Why: before @helloagent/sdk is published, local development may install it
+ * Why: before @helloagentai/sdk is published, local development may install it
  * with `npm install --no-save --package-lock=false ../../sdk-ts`, which
  * materializes as a symlink. OpenClaw installs staged plugins with
  * `--ignore-scripts`, so this helper must be run manually before
@@ -12,7 +12,7 @@
  * resolvable while satisfying the scanner.
  *
  * Two pitfalls we have to handle:
- *   1. The outer `@helloagent/sdk` itself is a symlink (handled by replacing
+ *   1. The outer `@helloagentai/sdk` itself is a symlink (handled by replacing
  *      it with a real copy of sdk-ts/).
  *   2. The copy still contains `node_modules/.bin/*` symlinks pointing to
  *      sibling dep binaries (acorn, tsc, etc.). Node's
@@ -20,7 +20,7 @@
  *      symlinks — it only dereferences the top-level entry — so we shell
  *      out to POSIX `cp -RL`, which follows ALL symlinks recursively.
  *
- * Idempotent: skips work when node_modules/@helloagent/sdk is already a
+ * Idempotent: skips work when node_modules/@helloagentai/sdk is already a
  * real directory (e.g. the user did this manually). Safe to re-run.
  */
 import { existsSync, lstatSync, mkdirSync, rmSync } from "node:fs";

@@ -43,7 +43,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
 
-import { Agent, type IncomingMessage } from "@helloagent/sdk";
+import { Agent, type IncomingMessage } from "@helloagentai/sdk";
 
 import type { HelloAgentCreds } from "../src/core/auth-store.js";
 

@@ -1,7 +1,7 @@
 /**
  * Per-account managed HelloAgent SDK client.
  *
- * One `HaClient` wraps one `Agent` from `@helloagent/sdk` plus the lifecycle
+ * One `HaClient` wraps one `Agent` from `@helloagentai/sdk` plus the lifecycle
  * state needed to expose it through the channel plugin's status surface
  * (starting / ready / needs_repairing / stopped).
  *
@@ -10,7 +10,7 @@
  * Feishu — the per-account handle that lifecycle, outbound, and probe code
  * all share.
  */
-import { Agent, AuthFailedError, type IncomingMessage } from "@helloagent/sdk";
+import { Agent, AuthFailedError, type IncomingMessage } from "@helloagentai/sdk";
 
 import type { ResolvedHelloAgentAccount } from "./types.js";
 import { haLogger } from "./ha-logger.js";

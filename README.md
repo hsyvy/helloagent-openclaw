@@ -1,4 +1,4 @@
-# @helloagent/openclaw
+# @helloagentai/openclaw
 
 OpenClaw channel plugin for HelloAgent — second-iteration scaffold mirroring
 the structure of [`larksuite/openclaw-lark`](https://github.com/larksuite/openclaw-lark).

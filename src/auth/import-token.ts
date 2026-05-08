@@ -3,7 +3,7 @@
  * ha_* agent token, validate it by completing one WebSocket auth handshake,
  * then persist it under OpenClaw's HelloAgent credential directory.
  */
-import { Agent, AuthFailedError } from "@helloagent/sdk";
+import { Agent, AuthFailedError } from "@helloagentai/sdk";
 
 import {
   CREDS_VERSION,

@@ -9,7 +9,7 @@ import {
   linkChannel,
   oauthPollDeviceToken,
   oauthStartDeviceAuthorization,
-} from "@helloagent/sdk";
+} from "@helloagentai/sdk";
 
 import {
   CREDS_VERSION,
