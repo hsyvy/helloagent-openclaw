@@ -1,7 +1,24 @@
 {
-  "name": "@helloagent/openclaw-helloagent",
+  "name": "@helloagent/openclaw",
   "version": "0.1.0",
   "description": "OpenClaw HelloAgent channel plugin (relay-backed messaging)",
+  "license": "MIT",
+  "author": "HelloAgent",
+  "homepage": "https://github.com/helloagentai/helloagent-openclaw#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/helloagentai/helloagent-openclaw.git"
+  },
+  "bugs": {
+    "url": "https://github.com/helloagentai/helloagent-openclaw/issues"
+  },
+  "keywords": [
+    "helloagent",
+    "openclaw",
+    "channel",
+    "plugin",
+    "relay"
+  ],
   "type": "module",
   "main": "./dist/index.js",
   "exports": {
@@ -12,8 +29,12 @@
     "index.cjs",
     "openclaw.plugin.json",
     "README.md",
+    "LICENSE",
     "scripts/dereference-sdk.mjs"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
