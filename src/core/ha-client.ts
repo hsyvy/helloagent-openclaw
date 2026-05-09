@@ -3,12 +3,8 @@
  *
  * One `HaClient` wraps one `Agent` from `@helloagentai/sdk` plus the lifecycle
  * state needed to expose it through the channel plugin's status surface
- * (starting / ready / needs_repairing / stopped).
- *
- * Replaces the role of the old `session-manager.ts` by reorganising along
- * Lark's structure: a `HaClient` is to HelloAgent what `LarkClient` is to
- * Feishu — the per-account handle that lifecycle, outbound, and probe code
- * all share.
+ * (starting / ready / needs_repairing / stopped). It is the single per-account
+ * handle that lifecycle, outbound, and probe code all share.
  */
 import { Agent, AuthFailedError, type IncomingMessage } from "@helloagentai/sdk";
 
@@ -172,8 +168,4 @@ export function stopAllClients(): void {
     client.stop();
   }
   clients.clear();
-}
-
-export function listClientIds(): string[] {
-  return [...clients.keys()];
 }

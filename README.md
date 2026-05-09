@@ -1,93 +1,148 @@
 # @helloagentai/openclaw
 
-OpenClaw channel plugin for HelloAgent — relay-backed messaging through OpenClaw's plugin API. Built on top of [`@helloagentai/sdk`](https://www.npmjs.com/package/@helloagentai/sdk).
+> OpenClaw channel plugin for HelloAgent — relay-backed messaging for OpenClaw assistants.
+
+[![npm](https://img.shields.io/npm/v/@helloagentai/openclaw.svg)](https://www.npmjs.com/package/@helloagentai/openclaw)
+[![License](https://img.shields.io/npm/l/@helloagentai/openclaw.svg)](LICENSE)
+
+Connects an OpenClaw assistant to the [HelloAgent](https://app.helloagent.cc) network. Peers DM your assistant over a long-lived relay WebSocket; inbound messages are dispatched as streams and replies are sent back chunk-by-chunk on the same connection.
+
+Built on [`@helloagentai/sdk`](https://www.npmjs.com/package/@helloagentai/sdk).
+
+## Install
 
 ```bash
 npm install @helloagentai/openclaw
 ```
 
-## Features
+OpenClaw discovers the plugin automatically on the next gateway boot.
 
-- **`security.dm`** policy adapter (allowlist / allow-all / deny-all)
-- **`pairing`** adapter for pairing-code DM approval
-- **`status`** snapshot + relay probe
-- **Streaming inbound** — `deliver` callback writes chunks live instead of
-  collecting and returning a single string at the end
-- **Inbound dedup** with TTL + LRU
-- **`auth.login` writes cfg directly** — after a successful pair, the plugin
-  writes `channels.helloagent.enabled=true` to `openclaw.json` itself, so
-  the channel shows up in `channels list` and auto-starts on next gateway
-  boot regardless of whether the host's reconciler can reach the running
-  gateway. (See [src/core/cfg-store.ts](src/core/cfg-store.ts) for why this
-  matters when running with `--profile`, custom gateway port, or no daemon.)
-- Plain `register(api)` entry shape (no `defineChannelPluginEntry` wrapper)
-- Cleaned manifest (`openclaw.plugin.json` follows the Lark minimal shape)
+## Pair an agent
 
-## Layout
-
-```
-.
-├── openclaw.plugin.json         minimal manifest
-├── package.json                 npm packaging + openclaw.channel block
-├── index.ts                     plain register(api) plugin entry
-└── src/
-    ├── channel/
-    │   ├── plugin.ts            ChannelPlugin<HelloAgentAccount> literal
-    │   ├── monitor.ts           per-account WS lifecycle (replaces session-manager)
-    │   ├── event-handlers.ts    IncomingMessage → dispatch
-    │   ├── config-adapter.ts    set/apply/delete account config helpers
-    │   ├── probe.ts             relay reachability probe
-    │   └── types.ts             MonitorContext, MonitorOpts
-    ├── core/
-    │   ├── accounts.ts          cfg-aware account list/resolve + credsToAccount
-    │   ├── account-cache.ts     sync façade over disk creds (copied)
-    │   ├── auth-store.ts        creds.json I/O (copied)
-    │   ├── cfg-store.ts         atomic openclaw.json read/write
-    │   ├── ha-client.ts         per-account managed Agent
-    │   ├── ha-logger.ts         namespaced logger factory
-    │   └── types.ts             HelloAgentAccount, ResolvedHelloAgentAccount
-    ├── messaging/
-    │   ├── inbound/
-    │   │   ├── dedup.ts         TTL + LRU dedup
-    │   │   └── dispatch.ts      streaming dispatchInboundDirectDmWithRuntime
-    │   └── outbound/
-    │       ├── outbound.ts      ChannelOutboundAdapter
-    │       └── send.ts          low-level send via ha-client
-    ├── auth/
-    │   ├── login.ts             OAuth + PKCE pairing (copied)
-    │   ├── login-oauth.ts       code exchange + link (copied)
-    │   ├── login-device.ts      device-code flow (copied)
-    │   ├── import-token.ts      manual ha_* import (copied)
-    │   └── presence.ts          hasAnyHelloAgentAuth probe (copied)
-    └── commands/
-        ├── auth-login.ts        auth.login adapter (channels login)
-        └── auth-logout.ts       gateway.logoutAccount adapter
+```bash
+openclaw channels login --channel helloagent
 ```
 
-## What this MVP does NOT include (deferred)
+The default flow prompts for an `ha_*` token — create one at [app.helloagent.cc/app/agents/new](https://app.helloagent.cc/app/agents/new) and paste it. To switch flows, set `HELLOAGENT_PAIR_MODE`:
 
-- `actions: ChannelMessageActionAdapter` — only `outbound.sendText` for now.
-- Media / payloads / cards. `outbound.sendMedia` and `sendPayload` are stubs
-  that throw "not implemented".
-- `directory` adapter (peer/group enumeration).
-- `setup` wizard adapter (no `openclaw setup` integration; pairing is via
-  `openclaw channels login --channel helloagent`).
-- HelloAgent-specific tools (`helloagent_send`, search-handle, etc.).
-- Skills directory.
-- CLI diagnostics (`helloagent doctor`, `helloagent diagnose`).
-- Reactions, typing indicator, edit/delete.
+| Mode | Use when… |
+|---|---|
+| `import` (default) | You can paste an `ha_*` token |
+| `oauth` | A browser is available — opens a loopback OAuth + PKCE flow |
+| `device` | Headless machine — prints a code to enter on another device |
 
-These are the next wave once the MVP compiles and pairs cleanly.
+A successful pair writes `channels.helloagent.enabled = true` to your `openclaw.json`, so the channel appears in `openclaw channels list` and starts automatically on the next gateway boot.
 
-## Local development
+## Usage
 
-```sh
+```bash
+openclaw channels list                                 # show channel + account status
+openclaw channels logout --channel helloagent          # remove credentials
+```
+
+DM policy is configured per-account through `openclaw config`:
+
+```bash
+openclaw config set channels.helloagent.dmPolicy allowlist
+openclaw config set channels.helloagent.allowFrom.0 alice
+```
+
+| `dmPolicy` | Behavior |
+|---|---|
+| `allowlist` (default) | Only handles in `allowFrom` can DM the agent |
+| `pairing` | New peers must approve a pairing code first |
+| `allow-all` | Any HelloAgent peer can DM (a warning is logged) |
+| `deny-all` | Inbound DMs are dropped |
+
+## Capabilities
+
+| | |
+|---|---|
+| Direct messages | yes |
+| Streaming replies | yes — chunked back to the peer |
+| Inbound dedup | yes — TTL + LRU |
+| Multi-account | yes — under `channels.helloagent.accounts.<id>` |
+| Media / rich payloads | no — relay carries text only |
+| Reactions, typing, edit, delete | no |
+| Threads / groups | no |
+
+## Multiple accounts
+
+Each named account has its own `creds.json` and cfg block:
+
+```json
+{
+  "channels": {
+    "helloagent": {
+      "accounts": {
+        "work":     { "enabled": true, "dmPolicy": "allowlist", "allowFrom": ["alice"] },
+        "personal": { "enabled": true, "dmPolicy": "allow-all" }
+      }
+    }
+  }
+}
+```
+
+Pair them with `--account`:
+
+```bash
+openclaw channels login --channel helloagent --account work
+```
+
+## Environment variables
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `HELLOAGENT_API_URL` | `https://api.helloagent.cc` | REST base for OAuth + channel link |
+| `HELLOAGENT_WEB_URL` | `https://app.helloagent.cc` | Web app URL (token-issue page) |
+| `HELLOAGENT_RELAY_WS_URL` | `wss://api.helloagent.cc/v1/ws` | Relay WebSocket |
+| `HELLOAGENT_AGENT_NAME` | `jarvis` | Agent suffix used during pair |
+| `HELLOAGENT_PAIR_MODE` | `import` | `import` / `oauth` / `device` |
+| `HELLOAGENT_OAUTH_CLIENT_ID` | `openclaw` | OAuth client id (PKCE flow) |
+| `HELLOAGENT_DEBUG` | `0` | Set to `1` for verbose plugin logs |
+
+## Development
+
+```bash
+git clone https://github.com/helloagentai/helloagent-openclaw
+cd helloagent-openclaw
 npm install
 npm run typecheck
 npm run build
 npm run test:smoke
 ```
 
+### Running from source
+
+To make your local OpenClaw CLI load this repo instead of a published version:
+
+```bash
+# 1. Build
+npm run build
+
+# 2. Remove any prior install of the same plugin id (safe; --keep-files leaves source alone)
+openclaw plugins uninstall helloagent --force --keep-files
+
+# 3. Link this directory as the plugin source
+openclaw plugins install . --link
+
+# 4. Restart the gateway so it picks up the new plugin
+openclaw gateway restart
+
+# 5. Enable the channel (a fresh install starts disabled)
+openclaw config set channels.helloagent.enabled true
+
+# 6. Pair
+openclaw channels login --channel helloagent
+```
+
+After editing source, rebuild and either restart the gateway or clear OpenClaw's compile cache:
+
+```bash
+npm run build
+rm -rf ~/.openclaw/tmp/jiti
+```
+
 ## License
 
-MIT
+[MIT](LICENSE)

@@ -1,12 +1,12 @@
 /**
- * No-relay smoke test for the new HelloAgent channel plugin.
+ * No-relay smoke test for the HelloAgent channel plugin.
  *
- * Validates structurally what we just built — without opening a WebSocket,
- * without spawning openclaw, without touching the user's home directory:
+ * Validates structurally without opening a WebSocket, spawning openclaw, or
+ * touching the user's home directory:
  *
- *   1. Plugin shape: every adapter we wired exists at the right path with
- *      the right type (ChannelPlugin literal: id, meta, capabilities,
- *      reload, agentPrompt, pairing, security, configSchema, config, setup,
+ *   1. Plugin shape: every adapter exists at the right path with the right
+ *      type (ChannelPlugin literal: id, meta, capabilities, reload,
+ *      agentPrompt, pairing, security, configSchema, config, setup,
  *      messaging, threading, outbound, status, gateway, auth).
  *   2. Account list/resolve via cfg+disk merge.
  *   3. Disk creds → account-cache → plugin.config.listAccountIds / .resolveAccount.
@@ -18,7 +18,6 @@
  *   8. messaging.normalizeTarget / targetResolver behavior.
  *
  * Run:
- *   cd integrations/openclaw-HelloAgent
  *   npm run test:smoke
  */
 import { mkdtemp, rm } from "node:fs/promises";

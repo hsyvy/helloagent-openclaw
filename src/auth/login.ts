@@ -2,14 +2,15 @@
  * Top-level pairing orchestrator. Drives the OAuth-loopback dance:
  *
  *   1. Bind a single-use HTTP server on 127.0.0.1:<loopbackPort>.
- *   2. Open the user's browser to <webUrl>/oauth/connect?... with our
- *      loopback URI as redirect_uri.
+ *   2. Print the consent URL for the user to open in their browser.
  *   3. Wait for the browser to hit /oauth/callback?code=...&state=...,
  *      verify state matches our CSRF token, capture the code.
  *   4. Hand off to ./login-oauth#exchangeAndPersist (token + link + persist).
  *   5. Close the loopback server, return the persisted creds.
+ *
+ * The user opens the URL themselves; we don't spawn a browser process. An
+ * embedder can inject auto-open behavior via `openBrowser` if needed.
  */
-import { spawn } from "node:child_process";
 import crypto from "node:crypto";
 import http from "node:http";
 import { AddressInfo } from "node:net";
@@ -31,6 +32,7 @@ export type PairOptions = {
   accountId?: string;
   /** Wait this long for the browser callback before giving up. Default 5min. */
   timeoutMs?: number;
+  /** Optional hook embedders can use to auto-open the consent URL. */
   openBrowser?: (url: string) => void;
   onProgress?: (line: string) => void;
 };
@@ -63,8 +65,7 @@ export async function pairHelloAgent(opts: PairOptions): Promise<HelloAgentCreds
         codeChallenge,
       });
       log(`[helloagent] open in your browser to authorize:\n  ${url}`);
-      const opener = opts.openBrowser ?? defaultBrowserOpen;
-      opener(url);
+      opts.openBrowser?.(url);
     },
   });
 
@@ -184,21 +185,4 @@ function newPkceVerifier(): string {
 
 function pkceChallenge(verifier: string): string {
   return crypto.createHash("sha256").update(verifier).digest("base64url");
-}
-
-function defaultBrowserOpen(url: string): void {
-  const cmd =
-    process.platform === "darwin"
-      ? "open"
-      : process.platform === "win32"
-        ? "cmd"
-        : "xdg-open";
-  const args = process.platform === "win32" ? ["/c", "start", "", url] : [url];
-  try {
-    const child = spawn(cmd, args, { stdio: "ignore", detached: true });
-    child.on("error", () => undefined);
-    child.unref();
-  } catch {
-    /* swallow */
-  }
 }

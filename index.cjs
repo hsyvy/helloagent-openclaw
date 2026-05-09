@@ -4,9 +4,9 @@
  * `require()` synchronously. This file exposes the ESM plugin (./dist/index.js)
  * as a CJS module by leveraging Node's >=22.12 require-of-ESM support.
  *
- * Mirrors the published `@larksuite/openclaw-lark` shape: a CJS file at the
- * package root pointed at by `package.json.openclaw.extensions`. The actual
- * implementation stays in dist/ as ESM.
+ * The package root holds this CJS shim (pointed at by
+ * `package.json.openclaw.extensions`) while the implementation lives in
+ * dist/ as ESM.
  */
 const esm = require("./dist/index.js");
 

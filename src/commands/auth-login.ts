@@ -83,10 +83,14 @@ async function readTokenFromStdin(
   }
   const rl = createInterface({ input, output });
   try {
-    runtime.log("[helloagent] To link this assistant, create an agent and copy its ha_* token:");
-    runtime.log(`[helloagent]   → ${hint.issueUrl}`);
-    runtime.log("[helloagent] Paste the token below, then press Enter:");
-    const token = (await rl.question("")).trim();
+    runtime.log("");
+    runtime.log("Link this assistant to a HelloAgent account:");
+    runtime.log("");
+    runtime.log(`  1. Open ${hint.issueUrl}`);
+    runtime.log("  2. Create an agent and copy its token (starts with \"ha_\")");
+    runtime.log("  3. Paste the token below");
+    runtime.log("");
+    const token = (await rl.question("Token: ")).trim();
     if (!token) throw new Error("helloagent: empty token");
     return token;
   } finally {
@@ -110,9 +114,6 @@ export async function loginHelloAgent(params: LoginParams): Promise<void> {
   const clientId = envOr("HELLOAGENT_OAUTH_CLIENT_ID", DEFAULT_CLIENT_ID);
   const agentName = envOr("HELLOAGENT_AGENT_NAME", DEFAULT_AGENT_NAME);
   const mode = resolvePairMode();
-
-  log(`[helloagent] pairing mode=${mode} account=${accountId} agent=${agentName}`);
-  log(`[helloagent] api=${apiUrl} relay=${relayWs}`);
 
   if (mode === "oauth") {
     const creds = await pairHelloAgent({

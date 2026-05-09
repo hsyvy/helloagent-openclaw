@@ -4,11 +4,7 @@
  * access token, calls /v1/channels/openclaw/link, and persists the returned
  * ha_* token to disk.
  */
-import {
-  HelloAgentApiError,
-  linkChannel,
-  oauthExchangeToken,
-} from "@helloagentai/sdk";
+import { linkChannel, oauthExchangeToken } from "@helloagentai/sdk";
 
 import {
   CREDS_VERSION,
@@ -63,5 +59,3 @@ export async function exchangeAndPersist(
   await writeCreds(creds, accountId);
   return creds;
 }
-
-export { HelloAgentApiError };
