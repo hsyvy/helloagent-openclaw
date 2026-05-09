@@ -5,13 +5,12 @@
  *
  * This is intentionally a plain literal (no `createChatChannelPlugin` wrapper)
  * so we can populate the richer surfaces — `security`, `pairing`, `status`,
- * `reload`, `agentPrompt`, `messaging` — that the wrapper hides. Mirrors
- * Lark's `feishuPlugin` shape from `larksuite/openclaw-lark`.
+ * `reload`, `agentPrompt`, `messaging` — that the wrapper hides.
  *
  * Adapters wired here:
  *
  *   meta            label / blurb / docs
- *   capabilities    chatTypes (DM only for MVP), media/reactions/threads = false
+ *   capabilities    chatTypes (direct only); media/reactions/threads = false
  *   reload          configPrefixes for hot reload
  *   agentPrompt     message-tool hints for HelloAgent handle conventions
  *   pairing         pairing-code DM flow (notify via outbound send)
@@ -314,8 +313,7 @@ export const helloAgentPlugin: ChannelPlugin<ResolvedHelloAgentAccount> = {
 
   // -------------------------------------------------------------------------
   // Threading — reply to the message that triggered the turn so the peer's
-  // UI threads the response under the inbound. "first" matches the prior
-  // plugin's `topLevelReplyToMode: "reply"` semantics under the current SDK.
+  // UI threads the response under the inbound.
   // -------------------------------------------------------------------------
 
   threading: {
@@ -323,7 +321,8 @@ export const helloAgentPlugin: ChannelPlugin<ResolvedHelloAgentAccount> = {
   },
 
   // -------------------------------------------------------------------------
-  // Outbound — sendText only for MVP.
+  // Outbound — sendText. sendMedia/sendPayload throw (relay does not carry
+  // media or rich payloads).
   // -------------------------------------------------------------------------
 
   outbound: helloAgentOutbound,

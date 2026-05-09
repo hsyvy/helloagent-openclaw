@@ -9,10 +9,10 @@
  * via `messaging/inbound/dispatch.ts` (an AsyncIterable<string> that the
  * SDK turns into StreamChunks), NOT through this adapter.
  *
- * MVP scope:
- *   - `sendText`  ✅
- *   - `sendMedia` ❌ (throws; deferred — relay does not yet ship media)
- *   - `sendPayload` ❌ (throws; deferred — no rich-payload support yet)
+ * Supported operations:
+ *   - `sendText`     — routes through the relay session.
+ *   - `sendMedia`    — throws; the relay does not carry media.
+ *   - `sendPayload`  — throws; the relay does not carry rich payloads.
  *
  * Conventions:
  *   - `deliveryMode: "direct"` — we own the WebSocket; no gateway hop.
@@ -57,13 +57,13 @@ export const helloAgentOutbound: ChannelOutboundAdapter = {
 
   async sendMedia() {
     throw new Error(
-      "helloagent: sendMedia is not implemented yet — the relay does not ship media in MVP",
+      "helloagent: sendMedia is not supported — the relay does not carry media",
     );
   },
 
   async sendPayload() {
     throw new Error(
-      "helloagent: sendPayload is not implemented yet — no rich-payload (channelData) support in MVP",
+      "helloagent: sendPayload is not supported — the relay does not carry rich payloads (channelData)",
     );
   },
 };

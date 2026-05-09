@@ -1,10 +1,10 @@
 /**
  * Configuration merge helpers for HelloAgent account management.
  *
- * Mirrors Lark's config-adapter.ts: centralises the pattern of merging a
- * partial configuration patch into the HelloAgent section of the top-level
- * OpenClaw config, handling both the default account (top-level fields) and
- * named accounts (nested under `accounts`).
+ * Centralises the pattern of merging a partial configuration patch into the
+ * HelloAgent section of the top-level OpenClaw config, handling both the
+ * default account (top-level fields) and named accounts (nested under
+ * `accounts`).
  *
  * Plus: `collectHelloAgentSecurityWarnings` produces user-facing warnings
  * for the channel plugin's `security.collectWarnings` adapter.
@@ -127,7 +127,7 @@ export function deleteAccount<T extends Record<string, unknown>>(
  * Produce user-facing security warnings for a HelloAgent account.
  * Surfaced through the channel plugin's `security.collectWarnings`.
  *
- * MVP rules:
+ * Rules:
  *   - dmPolicy="allow-all" with no allowFrom → warn (anyone can DM the agent).
  *   - allowFrom configured with dmPolicy="allow-all" → warn (allowFrom is ignored).
  */

@@ -1,37 +1,19 @@
 /**
  * Atomic read/write for the OpenClaw config file (`openclaw.json`).
  *
- * Why this exists: when the user runs `openclaw channels login --channel
- * helloagent`, the host's post-login reconciler tries to call
- * `channels.start` over the gateway WebSocket so the new account becomes
- * live without a daemon restart. That call requires the gateway to be
- * reachable AND the CLI to have valid credentials for it. In two common
- * cases — the gateway is down, or the user is targeting a non-default
- * gateway URL/port without auth — the reconciler bails with:
+ * Used by `auth.login` to write `channels.helloagent.enabled=true` directly
+ * after pairing, so the channel becomes visible to `channels list` and
+ * auto-starts on next gateway boot — regardless of whether the host's
+ * post-login reconciler can reach the running gateway (it skips the cfg
+ * update when the gateway is down or running with a URL override that
+ * requires explicit credentials).
  *
- *     Local login saved auth for helloagent/default, but the running
- *     gateway did not restart it: gateway url override requires explicit
- *     credentials
- *
- * Critically, the reconciler also does NOT update the cfg file. So even
- * though creds.json is on disk, `channels.helloagent` is missing from
- * `cfg.channels`, and the channel becomes invisible to:
- *
- *   - `openclaw channels list` (it filters by `cfg.channels.<id>` presence)
- *   - the gateway's auto-start loop on next boot
- *
- * This module fixes that by giving our `auth.login` adapter a way to write
- * `cfg.channels.helloagent` directly, so pairing is "single-step
- * pair-and-go" regardless of gateway reachability.
- *
- * Path resolution mirrors openclaw's own (paths-B2cMK-wd.js):
- *
+ * Path resolution:
  *   1. `OPENCLAW_CONFIG_PATH` env var if set (fully qualified path).
  *   2. `${OPENCLAW_STATE_DIR}/openclaw.json` if state dir is set.
  *   3. `~/.openclaw/openclaw.json`.
  *
- * Atomic write: temp file + rename + .bak rotation. Same crash-safety
- * guarantees as `auth-store.ts` for creds.
+ * Atomic write: temp file + rename + `.bak` rotation.
  */
 import { promises as fs } from "node:fs";
 import os from "node:os";

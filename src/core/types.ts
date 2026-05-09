@@ -19,7 +19,7 @@ export type ResolvedHelloAgentAccount = {
 };
 
 /**
- * Lark-style "account view" returned by config.resolveAccount. Combines the
+ * Combined "account view" returned by config.resolveAccount. Pairs the
  * disk-resident creds with the host-managed enabled/configured flags so the
  * status panel can describe an account that is paired but disabled, or
  * referenced in cfg but not yet paired.

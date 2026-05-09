@@ -1,10 +1,8 @@
 /**
  * Streaming inbound dispatch.
  *
- * Replaces the prior "collect-then-return-one-string" approach in
- * inbound-bridge.ts with a true streaming bridge. The SDK's
- * `Agent.onMessage` handler can return an `AsyncIterable<string>`; each
- * yielded value becomes a separate `StreamChunk` back to the peer (final
+ * The SDK's `Agent.onMessage` handler can return an `AsyncIterable<string>`;
+ * each yielded value becomes a separate `StreamChunk` back to the peer (final
  * chunk with `is_final=true`). The OpenClaw reply dispatcher emits a
  * `deliver(payload)` call per text block; we forward each one as a yield.
  *
@@ -73,10 +71,10 @@ async function* streamDispatch(
     return;
   }
 
-  // Type-erasure cast — see the original inbound-bridge.ts for the full
-  // explanation. The plugin-sdk types `channelRuntime` as the minimal
-  // ChannelRuntimeSurface for forward-compat, but the actual object is the
-  // full createPluginRuntime().channel surface.
+  // The plugin-sdk types `channelRuntime` as the minimal ChannelRuntimeSurface
+  // for forward-compat, but the actual object is the full
+  // createPluginRuntime().channel surface — cast to expose the wider shape
+  // dispatchInboundDirectDmWithRuntime expects.
   const runtime = {
     channel: channelRuntime as unknown as Parameters<
       typeof dispatchInboundDirectDmWithRuntime

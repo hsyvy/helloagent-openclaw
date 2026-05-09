@@ -1,13 +1,11 @@
 /**
  * Event handlers for the per-account HelloAgent client.
  *
- * Mirrors Lark's channel/event-handlers.ts: per-event functions that receive
- * a `MonitorContext` and pre-filter (dedup, expiry) before handing off to
- * the inbound dispatcher.
+ * Per-event functions receive a `MonitorContext` and pre-filter (dedup, expiry)
+ * before handing off to the inbound dispatcher.
  *
- * MVP scope: only `handleIncomingMessage`. Reactions, comment events,
- * card actions, and bot membership changes are not part of HelloAgent's
- * relay protocol yet.
+ * The relay protocol currently carries `IncomingMessage` only — there are no
+ * reaction events, card actions, or membership changes to handle.
  */
 import type { IncomingMessage } from "@helloagentai/sdk";
 

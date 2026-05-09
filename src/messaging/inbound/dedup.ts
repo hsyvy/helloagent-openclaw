@@ -3,8 +3,7 @@
  *
  * The relay re-delivers undelivered messages on WebSocket reconnect, so a
  * brief disconnect can produce duplicates. Without dedup, the agent would
- * dispatch the same inbound twice, sending the user two replies. This
- * mirrors Lark's `MessageDedup` (src/messaging/inbound/dedup.ts).
+ * dispatch the same inbound twice, sending the user two replies.
  *
  *   - `tryRecord(messageId, accountId)` returns false if the (id, account)
  *     pair was seen recently. Returns true (and records) on first sight.

@@ -97,11 +97,6 @@ export function listAccountIds(cfg: unknown): string[] {
   return [...combined];
 }
 
-export function defaultAccountId(): string {
-  const ids = accountCache.listAccountIds();
-  return ids[0] ?? DEFAULT_ACCOUNT_ID;
-}
-
 /**
  * Resolve a single account by merging disk creds with cfg overrides. The
  * resolved view is what host status/security/lifecycle code consumes.
@@ -137,43 +132,3 @@ export function getAccount(cfg: unknown, accountId?: string | null): HelloAgentA
   };
 }
 
-/**
- * Strict variant — used by code paths that have already verified pairing
- * (e.g. lifecycle.startAccount once the host has filtered by isEnabled).
- */
-export function getResolvedAccountOrThrow(
-  cfg: unknown,
-  accountId?: string | null,
-): ResolvedHelloAgentAccount {
-  const account = getAccount(cfg, accountId);
-  if (!account.resolved) {
-    throw new Error(
-      `helloagent: account ${account.accountId} is not paired. ` +
-        `Run \`openclaw channels login --channel helloagent\` first.`,
-    );
-  }
-  return account.resolved;
-}
-
-/**
- * Async variant for code paths outside the gateway hot path (CLI, auth, etc.).
- * Reads creds from disk directly rather than going through the cache.
- */
-export async function loadAccount(
-  accountId: string = DEFAULT_ACCOUNT_ID,
-): Promise<ResolvedHelloAgentAccount | null> {
-  const { readCreds } = await import("./auth-store.js");
-  const creds = await readCreds(accountId);
-  if (!creds) return null;
-  return credsToAccount(accountId, creds);
-}
-
-export async function loadAccountOrThrow(
-  accountId: string = DEFAULT_ACCOUNT_ID,
-): Promise<ResolvedHelloAgentAccount> {
-  const account = await loadAccount(accountId);
-  if (!account) {
-    throw new Error(`helloagent: account ${accountId} is not paired`);
-  }
-  return account;
-}

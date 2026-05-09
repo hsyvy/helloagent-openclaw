@@ -1,11 +1,10 @@
 /**
- * Namespaced logger factory. Mirrors Lark's `larkLogger('category')` pattern
- * so log lines carry a stable prefix like `[helloagent/channel/monitor]`,
- * making it easy to grep daemon output for plugin activity.
+ * Namespaced logger factory. Each call produces a logger that prefixes lines
+ * with `[helloagent/<category>]`, making it easy to grep daemon output for
+ * plugin activity.
  *
- * No external dependencies — falls back to console.* with a small wrapper
- * so the runtime doesn't need pino/winston/etc. The host's log pipeline
- * captures stdout/stderr regardless.
+ * No external dependencies — wraps `console.*` so the runtime doesn't need
+ * pino/winston/etc. The host's log pipeline captures stdout/stderr regardless.
  */
 type LogLevel = "info" | "warn" | "error" | "debug";
 

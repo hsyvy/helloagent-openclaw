@@ -2,10 +2,9 @@
  * Health probe for the HelloAgent channel.
  *
  * The host's `status.probeAccount` calls this to decide whether the channel
- * is reachable for a given account. Mirrors Lark's `probeFeishu` which calls
- * the bot/v3/info API.
+ * is reachable for a given account.
  *
- * MVP strategy:
+ * Strategy:
  *   - If a HaClient is registered and ready → ok=true (we know the WS is up).
  *   - If a HaClient is registered but `needs_repairing` → ok=false with the
  *     stored auth-failed detail.

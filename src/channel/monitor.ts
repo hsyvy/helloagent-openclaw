@@ -1,6 +1,5 @@
 /**
- * Per-account WebSocket monitor — replaces the role of the old
- * `session-manager.ts` and aligns with Lark's `channel/monitor.ts` shape.
+ * Per-account WebSocket monitor.
  *
  * `startAccount(ctx)` is what the gateway adapter (`gateway.startAccount` in
  * src/channel/plugin.ts) hands off to. It:
@@ -13,8 +12,8 @@
  *   5. Awaits `gatewayCtx.abortSignal` — does NOT return early. The host's
  *      channel-runtime treats `startAccount` resolution as "channel exited"
  *      and schedules an auto-restart, which crashes if its internal logger
- *      is undefined (server.impl-hNr66nDN.js:2073). Lark's monitor follows
- *      the same long-running-promise contract.
+ *      is undefined (server.impl-hNr66nDN.js:2073). The contract is to stay
+ *      pending until the host signals abort, then clean up.
  *
  * `stopAccount(accountId)` tears down the live client.
  */
@@ -117,8 +116,7 @@ export async function startAccount(
   // channel-runtime interprets that as "channel exited" and enters its
   // auto-restart machinery — which has a bug
   // (server.impl-hNr66nDN.js:2073: log.info?.() on undefined log) that
-  // crashes the entire gateway. Mirror Lark's `await lark.startWS({...})`
-  // pattern: stay pending until abort, then clean up.
+  // crashes the entire gateway. Stay pending until abort, then clean up.
   await new Promise<void>((resolve) => {
     if (gatewayCtx.abortSignal.aborted) {
       resolve();
