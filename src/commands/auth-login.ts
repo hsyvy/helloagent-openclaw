@@ -122,9 +122,10 @@ export async function loginHelloAgent(params: LoginParams): Promise<void> {
       apiUrl,
       webUrl,
       accountId,
+      onProgress: log,
     });
-    log(`[helloagent] linked as ${creds.handle}`);
     await persistChannelEnabled(accountId, log);
+    log(`Linked as @${creds.handle}.`);
     return;
   }
 
@@ -136,22 +137,21 @@ export async function loginHelloAgent(params: LoginParams): Promise<void> {
       accountId,
       onProgress: log,
     });
-    log(`[helloagent] linked as ${creds.handle}`);
     await persistChannelEnabled(accountId, log);
+    log(`Linked as @${creds.handle}.`);
     return;
   }
 
-  // mode === "import" (method 1: manual paste).
+  // mode === "import" (manual token paste).
   const token = await readTokenFromStdin(runtime, { issueUrl: tokenIssueUrl(webUrl) });
   const creds = await importHelloAgentToken({
     token,
     apiUrl,
     relayWs,
     accountId,
-    onProgress: log,
   });
-  log(`[helloagent] imported token; linked as ${creds.handle}`);
   await persistChannelEnabled(accountId, log);
+  log(`Linked as @${creds.handle}.`);
 }
 
 /**
@@ -169,16 +169,11 @@ async function persistChannelEnabled(
   log: (line: string) => void,
 ): Promise<void> {
   try {
-    const { path: cfgPath } = await mergeHelloAgentAccountConfig(accountId, { enabled: true });
-    const keyPath =
-      accountId === "default"
-        ? "channels.helloagent.enabled"
-        : `channels.helloagent.accounts.${accountId}.enabled`;
-    log(`[helloagent] cfg updated: ${keyPath}=true (${cfgPath})`);
+    await mergeHelloAgentAccountConfig(accountId, { enabled: true });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     log(
-      `[helloagent] warning: could not update cfg automatically (${msg}). ` +
+      `Warning: could not update cfg automatically (${msg}). ` +
         `Pairing succeeded; run \`openclaw config set channels.helloagent.enabled true\` to make the channel visible.`,
     );
   }

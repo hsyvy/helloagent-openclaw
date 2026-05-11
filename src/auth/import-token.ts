@@ -25,7 +25,6 @@ export async function importHelloAgentToken(
   opts: ImportTokenOptions,
 ): Promise<HelloAgentCreds> {
   const accountId = opts.accountId ?? DEFAULT_ACCOUNT_ID;
-  const log = opts.onProgress ?? ((s: string) => console.log(s));
   const handle = await resolveAgentHandleFromToken(opts.token, opts.relayWs, opts.timeoutMs);
   const { ownerHandle, agentName } = splitHandle(handle);
 
@@ -41,7 +40,6 @@ export async function importHelloAgentToken(
     source: "manual",
   };
   await writeCreds(creds, accountId);
-  log(`[helloagent] imported token for @${creds.handle}`);
   return creds;
 }
 

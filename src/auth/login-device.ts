@@ -88,6 +88,5 @@ export async function pairHelloAgentWithDeviceCode(
     source: "device",
   };
   await writeCreds(creds, accountId);
-  log(`[helloagent] linked as @${creds.handle}`);
   return creds;
 }

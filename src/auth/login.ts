@@ -72,7 +72,6 @@ export async function pairHelloAgent(opts: PairOptions): Promise<HelloAgentCreds
   const effectiveRedirect =
     boundPort === port ? redirectUri : `http://127.0.0.1:${boundPort}${cbPath}`;
 
-  log(`[helloagent] code received; exchanging for token...`);
   const creds = await exchangeAndPersist({
     code,
     agentName: opts.agentName,
@@ -83,7 +82,6 @@ export async function pairHelloAgent(opts: PairOptions): Promise<HelloAgentCreds
     apiUrl: opts.apiUrl,
     accountId: opts.accountId,
   });
-  log(`[helloagent] linked as @${creds.handle}`);
   return creds;
 }
 

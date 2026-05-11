@@ -192,7 +192,20 @@ export function listAccountIds(): string[] {
 
 export function resolveAccount(accountId: string): ResolvedHelloAgentAccount | undefined {
   if (!initialized) init();
-  return accounts.get(accountId);
+  const cached = accounts.get(accountId);
+  if (cached) return cached;
+
+  // Cache miss — could be a brand-new creds file that fs.watch hasn't
+  // surfaced yet (CLI writes creds, then immediately asks the gateway to
+  // start the channel; the watcher tick has not landed). Try a direct disk
+  // read to self-heal. If found, prime the cache and emit "added" so any
+  // downstream listeners stay in sync.
+  const creds = readCreds(resolveHelloAgentAuthDir(), accountId);
+  if (!creds) return undefined;
+  const account = credsToAccount(accountId, creds);
+  accounts.set(accountId, account);
+  emit("added", accountId);
+  return account;
 }
 
 export function onChange(listener: AccountCacheListener): () => void {
